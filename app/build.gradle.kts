@@ -78,6 +78,8 @@ dependencies {
     implementation(projects.feature.topic.impl)
     implementation(projects.feature.search.api)
     implementation(projects.feature.search.impl)
+    implementation(projects.feature.news.api)
+    implementation(projects.feature.news.impl)
     implementation(projects.feature.settings.impl)
 
     implementation(projects.core.common)
