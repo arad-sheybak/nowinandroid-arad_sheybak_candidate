@@ -18,6 +18,8 @@ package com.google.samples.apps.nowinandroid.core.designsystem.component
 
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.ime
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -35,9 +37,12 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItemCo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
+import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.google.samples.apps.nowinandroid.core.designsystem.icon.NiaIcons
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
@@ -177,6 +182,9 @@ fun NiaNavigationRail(
  * Now in Android navigation suite scaffold with item and content slots.
  * Wraps Material 3 [NavigationSuiteScaffold].
  *
+ * The navigation component is hidden while the soft keyboard (IME) is visible, so that it isn't
+ * pushed up above the keyboard.
+ *
  * @param modifier Modifier to be applied to the navigation suite scaffold.
  * @param navigationSuiteItems A slot to display multiple items via [NiaNavigationSuiteScope].
  * @param windowAdaptiveInfo The window adaptive info.
@@ -214,6 +222,19 @@ fun NiaNavigationSuiteScaffold(
         ),
     )
 
+    val navigationSuiteScaffoldState = rememberNavigationSuiteScaffoldState()
+
+    val density = LocalDensity.current
+    val isImeVisible = WindowInsets.ime.getBottom(density) > 0
+
+    LaunchedEffect(isImeVisible) {
+        if (isImeVisible) {
+            navigationSuiteScaffoldState.hide()
+        } else {
+            navigationSuiteScaffoldState.show()
+        }
+    }
+
     NavigationSuiteScaffold(
         navigationSuiteItems = {
             NiaNavigationSuiteScope(
@@ -227,6 +248,7 @@ fun NiaNavigationSuiteScaffold(
             navigationBarContentColor = NiaNavigationDefaults.navigationContentColor(),
             navigationRailContainerColor = Color.Transparent,
         ),
+        state = navigationSuiteScaffoldState,
         modifier = modifier,
     ) {
         content()
