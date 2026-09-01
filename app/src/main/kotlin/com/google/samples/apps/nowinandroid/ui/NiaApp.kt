@@ -186,6 +186,7 @@ internal fun NiaApp(
                 )
             }
         },
+        modifier = Modifier.windowInsetsPadding(WindowInsets.ime),
         windowAdaptiveInfo = windowAdaptiveInfo,
     ) {
         Scaffold(
